@@ -1,0 +1,36 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
+}
+
+.container {
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 2em;
+}
+
+.post {
+    margin: 1em 0;
+    list-style-type: none;
+}
+
+.post-title a {
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1.2em;
+}
+
+.title-light a {
+    color: rgb(187, 46, 31);
+}
+
+.post-subtitle span {
+    margin-right: 0.25em;
+}
+
+.subtitle-light {
+    color: rgb(128, 128, 128);
+}
+
+.subtitle-light a {
+    color: black;
+}

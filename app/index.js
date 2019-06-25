@@ -1,14 +1,16 @@
 import React from "react"
 import ReactDOM from "react-dom"
+import "./index.css"
+import Top from "./components/Top"
 
 class App extends React.Component
 {
     render()
     {
         return(
-            <h1>
-                Hello World
-            </h1>
+            <div class="container">
+                <Top />
+            </div>
         )
     }
 }
