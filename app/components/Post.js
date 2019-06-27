@@ -1,23 +1,21 @@
 import React from "react"
 import PropTypes from "prop-types"
+import {PostMetadata} from "./Metadata"
 
 export default function Post({title, link, metadata})
 {
     return (
         <>
-            <div className="post-title title-light">
+            <div className="title post-title title-light">
                 <a href={link}>{title}</a>
             </div>
-            <div className="post-subtitle subtitle-light">
-                <span>
-                    by <a href={metadata.user_link}>{metadata.username}</a>
-                </span>
-                <span>
-                    on {metadata.date}
-                </span>
-                <span>
-                    with <a href={metadata.comment_link}>{metadata.comment_count}</a> comments
-                </span>
+            <div className="subtitle-light">
+                <PostMetadata
+                    id={metadata.id}
+                    username={metadata.username}
+                    time={metadata.date}
+                    comments={metadata.comment_count}
+                />
             </div>
         </>
     )

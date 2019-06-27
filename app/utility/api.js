@@ -5,15 +5,15 @@ export function getPostData(id)
         .then(res => res.json())
         .then(data => {
             return {
-                id: id,
                 title: data.title,
                 link: data.url === undefined ? "#" : data.url,
                 text: data.text,
+                parent: data.parent,
+                comments: data.kids,
                 metadata: {
+                    id: data.id,
                     username: data.by,
-                    user_link: "#",
                     date: data.time,
-                    comment_link: "#",
                     comment_count: data.kids === undefined ? 0 : data.kids.length
                 }
             }
@@ -55,7 +55,7 @@ export function getCommentData(id)
         })
 }
 
-function fetchPosts(ids)
+export function fetchPosts(ids)
 {
     return Promise.all(ids.map(id => getPostData(id)));
 }
