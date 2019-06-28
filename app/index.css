@@ -88,3 +88,38 @@ ul {
     cursor: pointer;
     outline: none;
 }
+
+nav {
+    margin-bottom: 15px;
+}
+
+nav h1 {
+    margin-bottom: 0px;
+    font-size: 2em;
+}
+
+.nav-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.nav-links {
+    display: flex;
+    flex-direction: row;
+}
+
+.nav-links li {
+    margin-right: 10px;
+    font-weight: bold;
+    font-size: 1.25em;
+}
+
+.nav-button {
+    border: none;
+    font: inherit;
+    font-size: 1.75em;
+    background-color: transparent;
+    cursor: pointer;
+    outline: none;
+}
