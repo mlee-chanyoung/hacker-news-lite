@@ -3,6 +3,7 @@ import ReactDOM from "react-dom"
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom"
 
 import "./index.css"
+import {ThemeProvider} from "./contexts/theme"
 import Nav from "./components/Nav"
 import Loading from "./components/Loading"
 
@@ -13,22 +14,39 @@ const Comments = React.lazy(() => import ("./components/Comments"));
 
 class App extends React.Component
 {
+    state = {
+        theme: "light",
+        toggleTheme: () => (
+            this.setState(({theme}) => ({
+                theme: theme === "light"
+                    ? "dark"
+                    : "light"
+            }))
+        ),
+        isLight: () => {
+            return this.state.theme === "light";
+        }
+    }
     render()
     {
         return(
             <Router>
-                <div className="container">
-                    <Nav />
-                    <React.Suspense fallback={<Loading />} >
-                        <Switch>
-                            <Route exact path="/" component={Top} />
-                            <Route exact path="/new" component={New} />
-                            <Route exact path="/user" component={Profile} />
-                            <Route exact path="/post" component={Comments} />
-                            <Route render={() => <h1>404</h1>} />
-                        </Switch>
-                    </React.Suspense>
-                </div>
+                <ThemeProvider value={this.state}>
+                    <div className={this.state.theme}>
+                        <div className="container">
+                            <Nav />
+                            <React.Suspense fallback={<Loading />} >
+                                <Switch>
+                                    <Route exact path="/" component={Top} />
+                                    <Route exact path="/new" component={New} />
+                                    <Route exact path="/user" component={Profile} />
+                                    <Route exact path="/post" component={Comments} />
+                                    <Route render={() => <h1>404</h1>} />
+                                </Switch>
+                            </React.Suspense>
+                        </div>
+                    </div>
+                </ThemeProvider>
             </Router>
         )
     }

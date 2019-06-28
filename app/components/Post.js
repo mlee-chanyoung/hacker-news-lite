@@ -1,23 +1,28 @@
 import React from "react"
 import PropTypes from "prop-types"
 import {PostMetadata} from "./Metadata"
+import {ThemeConsumer} from "../contexts/theme"
 
 export default function Post({title, link, metadata})
 {
     return (
-        <>
-            <div className="title post-title title-light">
-                <a href={link}>{title}</a>
-            </div>
-            <div className="subtitle-light">
-                <PostMetadata
-                    id={metadata.id}
-                    username={metadata.username}
-                    time={metadata.date}
-                    comments={metadata.comment_count}
-                />
-            </div>
-        </>
+        <ThemeConsumer>
+            {({theme}) => (
+                <>
+                    <div className={`title post-title title-${theme}`}>
+                        <a href={link}>{title}</a>
+                    </div>
+                    <div className={`subtitle-${theme}`}>
+                        <PostMetadata
+                            id={metadata.id}
+                            username={metadata.username}
+                            time={metadata.date}
+                            comments={metadata.comment_count}
+                        />
+                    </div>
+                </>
+            )}
+        </ThemeConsumer>
     )
 }
 Post.propTypes = {

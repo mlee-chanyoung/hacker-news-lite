@@ -3,6 +3,7 @@ import PropTypes from "prop-types"
 import queryString from "query-string"
 import {NavLink} from "react-router-dom"
 import {getPostData, fetchPosts} from "../utility/api"
+import {ThemeConsumer} from "../contexts/theme"
 
 import {PostMetadata} from "./Metadata"
 import Loading from "./Loading"
@@ -11,38 +12,46 @@ import Loading from "./Loading"
 function Comment({metadata, children})
 {
     return (
-        <div className="comment-box">
-            <div className="subtitle-light">
-                <PostMetadata
-                    id={metadata.id}
-                    username={metadata.username}
-                    time={metadata.date}
-                    comments={metadata.comment_count}
-                />
-            </div>
-            {children}
-        </div>
+        <ThemeConsumer>
+            {({theme}) => (
+                <div className="comment-box">
+                    <div className={`subtitle-${theme}`}>
+                        <PostMetadata
+                            id={metadata.id}
+                            username={metadata.username}
+                            time={metadata.date}
+                            comments={metadata.comment_count}
+                        />
+                    </div>
+                    {children}
+                </div>
+            )}
+        </ThemeConsumer>
     )
 }
 
 function CommentList({comments})
 {
     return (
-        <ul>
-            {comments.map((comment, index) => (
-                comment.text !== undefined && (
-                    <li key={comment.metadata.id}>
-                        <Comment
-                            metadata={comment.metadata}
-                        >
-                            <div className="post-content">
-                                <p dangerouslySetInnerHTML={{__html: comment.text}} />
-                            </div>
-                        </Comment>
-                    </li>
-                )
-            ))}
-        </ul>
+        <ThemeConsumer>
+            {({theme}) => (
+                <ul>
+                    {comments.map((comment, index) => (
+                        comment.text !== undefined && (
+                            <li key={comment.metadata.id}>
+                                <Comment
+                                    metadata={comment.metadata}
+                                >
+                                    <div className="post-content">
+                                        <p className={`${theme}-text`} dangerouslySetInnerHTML={{__html: comment.text}} />
+                                    </div>
+                                </Comment>
+                            </li>
+                        )
+                    ))}
+                </ul>
+            )}
+        </ThemeConsumer>
     )
 }
 
@@ -114,64 +123,68 @@ export default class Comments extends React.Component
                 !postdata.metadata
                     ? <Loading />
                     : (
-                        <>
-                            {postdata.parent && (
-                                <div className="return-link">
-                                    <NavLink
-                                        className="link"
-                                        to={{
-                                            pathname: "/post",
-                                            search: `?id=${postdata.parent}`
-                                        }}
-                                    >
-                                        &lt; View Parent
-                                    </NavLink>
-                                </div>
-                            )}
-                            <div className="page-header">
-                                {postdata.title && (
-                                    <div className="title page-title title-light">
-                                        <a href={postdata.link}>{postdata.title}</a>
-                                    </div>
-                                )}
-                                <div className="subtitle-light">
-                                    <PostMetadata
-                                        id={postdata.metadata.id}
-                                        username={postdata.metadata.username}
-                                        time={postdata.metadata.date}
-                                        comments={postdata.metadata.comment_count}
-                                    />
-                                </div>
-                                {postdata.text && (
-                                    <div className="post-content">
-                                        <p dangerouslySetInnerHTML={{__html: postdata.text}} />
-                                    </div>
-                                )}
-                            </div>
-                            {postdata.metadata.comment_count > 0 && (
+                        <ThemeConsumer>
+                            {({theme}) => (
                                 <>
-                                    <div className="title section-title title-light">
-                                        Comments
+                                    {postdata.parent && (
+                                        <div className={`return-link link-${theme}`}>
+                                            <NavLink
+                                                className="link"
+                                                to={{
+                                                    pathname: "/post",
+                                                    search: `?id=${postdata.parent}`
+                                                }}
+                                            >
+                                                &lt; View Parent
+                                            </NavLink>
+                                        </div>
+                                    )}
+                                    <div className="page-header">
+                                        {postdata.title && (
+                                            <div className={`title page-title title-${theme}`}>
+                                                <a href={postdata.link}>{postdata.title}</a>
+                                            </div>
+                                        )}
+                                        <div className={`subtitle-${theme}`}>
+                                            <PostMetadata
+                                                id={postdata.metadata.id}
+                                                username={postdata.metadata.username}
+                                                time={postdata.metadata.date}
+                                                comments={postdata.metadata.comment_count}
+                                            />
+                                        </div>
+                                        {postdata.text && (
+                                            <div className="post-content">
+                                                <p className={`${theme}-text`} dangerouslySetInnerHTML={{__html: postdata.text}} />
+                                            </div>
+                                        )}
                                     </div>
-                                    {comments.length > 0
-                                        ? (<>
-                                            <CommentList comments={comments} />
-                                            {postdata.metadata.comment_count > 50
-                                                ? this.state.all
-                                                    ? comments.length === 50 && <Loading />
-                                                    : <button
-                                                        className="button-link"
-                                                        onClick={this.viewAll}>
-                                                        View All
-                                                    </button>
-                                                : <></>
+                                    {postdata.metadata.comment_count > 0 && (
+                                        <>
+                                            <div className={`title section-title title-${theme}`}>
+                                                Comments
+                                            </div>
+                                            {comments.length > 0
+                                                ? (<>
+                                                    <CommentList comments={comments} />
+                                                    {postdata.metadata.comment_count > 50
+                                                        ? this.state.all
+                                                            ? comments.length === 50 && <Loading />
+                                                            : <button
+                                                                className={`button-link link-${theme}`}
+                                                                onClick={this.viewAll}>
+                                                                View All
+                                                            </button>
+                                                        : <></>
+                                                    }
+                                                </>)
+                                                : <Loading />
                                             }
-                                        </>)
-                                        : <Loading />
-                                    }
+                                        </>
+                                    )}
                                 </>
                             )}
-                        </>
+                        </ThemeConsumer>
                     )
             }
             </>

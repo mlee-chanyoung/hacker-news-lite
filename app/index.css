@@ -1,5 +1,25 @@
+html, body, #app {
+    width: 100%;
+    height: 100%;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
+    margin: 0;
+}
+
+.light {
+    color: black;
+    background-color: white;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.dark {
+    background-color: #1c2022;
+    color: white;
+    min-width: 100%;
+    min-height: 100%;
 }
 
 ul {
@@ -49,6 +69,14 @@ ul {
     color: rgb(187, 46, 31);
 }
 
+.title-dark {
+    color: white;
+}
+
+.title-dark a {
+    color: rgb(222, 75, 59);
+}
+
 .metadata span {
     margin-right: 0.25em;
 }
@@ -61,6 +89,14 @@ ul {
     color: black;
 }
 
+.subtitle-dark {
+    color: rgb(150, 150, 150);
+}
+
+.subtitle-dark a {
+    color: white;
+}
+
 .comment-box {
     margin: 10px 0;
     padding: 20px;
@@ -70,6 +106,10 @@ ul {
 
 .post-content {
     margin: 10px 0;
+}
+
+.dark-text a {
+    color: rgb(115, 198, 242);
 }
 
 .return-link {
@@ -87,6 +127,14 @@ ul {
     text-decoration: underline;
     cursor: pointer;
     outline: none;
+}
+
+.link-light, .link-light a {
+    color: black;
+}
+
+.link-dark, .link-dark a {
+    color: white;
 }
 
 nav {
@@ -121,6 +169,10 @@ nav h1 {
 
 .nav-link-light {
     color: rgb(175, 175, 175);
+}
+
+.nav-link-dark {
+    color: rgb(100, 100, 100);
 }
 
 .nav-button {
