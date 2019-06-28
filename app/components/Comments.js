@@ -1,6 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import queryString from "query-string"
+import {NavLink} from "react-router-dom"
 import {getPostData, fetchPosts} from "../utility/api"
 
 import {PostMetadata} from "./Metadata"
@@ -54,9 +55,18 @@ export default class Comments extends React.Component
     }
     componentDidMount()
     {
-        const id = "20294801";
-        // const id = "20295873";
-
+        this.getPosts();
+    }
+    componentDidUpdate(prevProps)
+    {
+        if (this.props.location.search !== prevProps.location.search)
+        {
+            this.resetState();
+            this.getPosts()
+        }
+    }
+    getPosts = () => {
+        const {id} = queryString.parse(this.props.location.search);
         getPostData(id)
             .then(data => {
                 this.setState({postdata: data});
@@ -73,6 +83,13 @@ export default class Comments extends React.Component
                         })
                 }
             })
+    }
+    resetState = () => {
+        this.setState({
+            postdata: {},
+            comments: [],
+            all: false
+        })
     }
     viewAll = () => {
         this.setState({
@@ -100,7 +117,15 @@ export default class Comments extends React.Component
                         <>
                             {postdata.parent && (
                                 <div className="return-link">
-                                    <a href="#">&lt; View Parent</a>
+                                    <NavLink
+                                        className="link"
+                                        to={{
+                                            pathname: "/post",
+                                            search: `?id=${postdata.parent}`
+                                        }}
+                                    >
+                                        &lt; View Parent
+                                    </NavLink>
                                 </div>
                             )}
                             <div className="page-header">

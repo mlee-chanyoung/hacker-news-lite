@@ -17,9 +17,20 @@ export default class Profile extends React.Component
     }
     componentDidMount()
     {
-        const user = "EndXA";
+        this.getUser();
+    }
+    componentDidUpdate(prevProps)
+    {
+        if (this.props.location.search !== prevProps.location.search)
+        {
+            this.resetState();
+            this.getPosts()
+        }
+    }
+    getUser = () => {
+        const {id} = queryString.parse(this.props.location.search);
 
-        getUserData(user)
+        getUserData(id)
             .then(data => {
                 this.setState({userdata: data});
                 return fetchPosts(data.posts.slice(0, 50))
@@ -30,6 +41,13 @@ export default class Profile extends React.Component
                         })
                     })
             })
+    }
+    resetState = () => {
+        this.setState({
+            loading: true,
+            userdata: {},
+            posts: []
+        })
     }
     render()
     {

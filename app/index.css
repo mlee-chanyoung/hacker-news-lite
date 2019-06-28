@@ -115,6 +115,14 @@ nav h1 {
     font-size: 1.25em;
 }
 
+.nav-link {
+    text-decoration: none;
+}
+
+.nav-link-light {
+    color: rgb(175, 175, 175);
+}
+
 .nav-button {
     border: none;
     font: inherit;
