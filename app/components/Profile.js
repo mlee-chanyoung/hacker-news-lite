@@ -14,7 +14,8 @@ export default class Profile extends React.Component
     state = {
         loading: true,
         userdata: {},
-        posts: []
+        posts: [],
+        error: {}
     }
     componentDidMount()
     {
@@ -41,48 +42,71 @@ export default class Profile extends React.Component
                             loading: false
                         })
                     })
+                    .catch(({message}) => {
+                        this.setState({
+                            error: {
+                                message: "Failed to retrieve posts. " + message,
+                                type: 2
+                            }
+                        })
+                    })
+            })
+            .catch(({message}) => {
+                this.setState({
+                    error: {
+                        message: "Failed to retrieve user info. " + message,
+                        type: 1
+                    }
+                })
             })
     }
     resetState = () => {
         this.setState({
             loading: true,
             userdata: {},
-            posts: []
+            posts: [],
+            error: {}
         })
     }
     render()
     {
-        const {userdata, posts} = this.state;
+        const {userdata, posts, error} = this.state;
         return (
             <div>
                 {
                     this.state.loading
                         ? <Loading />
-                        : (
-                            <ThemeConsumer>
-                                {({theme}) => (
-                                    <>
-                                        <div className="page-header">
-                                            <div className={`title page-title title-${theme}`}>
-                                                {userdata.username}
+                        : error.type && error.type === 1
+                            ? <p>{error.message}</p>
+                            : (
+                                <ThemeConsumer>
+                                    {({theme}) => (
+                                        <>
+                                            <div className="page-header">
+                                                <div className={`title page-title title-${theme}`}>
+                                                    {userdata.username}
+                                                </div>
+                                                <div className={`subtitle-${theme}`}>
+                                                    <UserMetadata
+                                                        time={userdata.joined}
+                                                        karma={userdata.karma}
+                                                    />
+                                                </div>
                                             </div>
-                                            <div className={`subtitle-${theme}`}>
-                                                <UserMetadata
-                                                    time={userdata.joined}
-                                                    karma={userdata.karma}
-                                                />
+                                            <div className={`title section-title title-${theme}`}>
+                                                Posts
                                             </div>
-                                        </div>
-                                        <div className={`title section-title title-${theme}`}>
-                                            Posts
-                                        </div>
-                                        <PostList
-                                            posts={posts.filter(post => post.title !== undefined)}
-                                        />
-                                    </>
-                                )}
-                            </ThemeConsumer>
-                        )
+                                            {
+                                                error.type && error.type === 2
+                                                    ? <p>{error.message}</p>
+                                                    : <PostList
+                                                        posts={posts.filter(post => post.title !== undefined)}
+                                                    />
+                                            }
+                                        </>
+                                    )}
+                                </ThemeConsumer>
+                            )
                 }
             </div>
         )

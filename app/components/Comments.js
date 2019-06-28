@@ -60,7 +60,8 @@ export default class Comments extends React.Component
     state = {
         postdata: {},
         comments: [],
-        all: false
+        all: false,
+        error: {}
     }
     componentDidMount()
     {
@@ -90,14 +91,31 @@ export default class Comments extends React.Component
                                 comments: comments
                             });
                         })
+                        .catch(({message}) => {
+                            this.setState({
+                                error: {
+                                    message: "Failed to retrieve comments. " + message,
+                                    type: 2
+                                }
+                            })
+                        })
                 }
+            })
+            .catch(({message}) => {
+                this.setState({
+                    error: {
+                        message: "Failed to retrieve post info. " + message,
+                        type: 1
+                    }
+                })
             })
     }
     resetState = () => {
         this.setState({
             postdata: {},
             comments: [],
-            all: false
+            all: false,
+            error: {}
         })
     }
     viewAll = () => {
@@ -113,79 +131,94 @@ export default class Comments extends React.Component
                     }
                 })
             })
+            .catch(({message}) => {
+                this.setState({
+                    error: {
+                        message: "Failed to retrieve comments. " + message,
+                        type: 3
+                    }
+                })
+            })
     }
     render()
     {
-        const {postdata, comments, remaining} = this.state;
+        const {postdata, comments, remaining, error} = this.state;
         return (
             <>
             {
                 !postdata.metadata
                     ? <Loading />
-                    : (
-                        <ThemeConsumer>
-                            {({theme}) => (
-                                <>
-                                    {postdata.parent && (
-                                        <div className={`return-link link-${theme}`}>
-                                            <NavLink
-                                                className="link"
-                                                to={{
-                                                    pathname: "/post",
-                                                    search: `?id=${postdata.parent}`
-                                                }}
-                                            >
-                                                &lt; View Parent
-                                            </NavLink>
-                                        </div>
-                                    )}
-                                    <div className="page-header">
-                                        {postdata.title && (
-                                            <div className={`title page-title title-${theme}`}>
-                                                <a href={postdata.link}>{postdata.title}</a>
+                    : error.type && error.type === 1
+                        ? <p>{error.message}</p>
+                        : (
+                            <ThemeConsumer>
+                                {({theme}) => (
+                                    <>
+                                        {postdata.parent && (
+                                            <div className={`return-link link-${theme}`}>
+                                                <NavLink
+                                                    className="link"
+                                                    to={{
+                                                        pathname: "/post",
+                                                        search: `?id=${postdata.parent}`
+                                                    }}
+                                                >
+                                                    &lt; View Parent
+                                                </NavLink>
                                             </div>
                                         )}
-                                        <div className={`subtitle-${theme}`}>
-                                            <PostMetadata
-                                                id={postdata.metadata.id}
-                                                username={postdata.metadata.username}
-                                                time={postdata.metadata.date}
-                                                comments={postdata.metadata.comment_count}
-                                            />
+                                        <div className="page-header">
+                                            {postdata.title && (
+                                                <div className={`title page-title title-${theme}`}>
+                                                    <a href={postdata.link}>{postdata.title}</a>
+                                                </div>
+                                            )}
+                                            <div className={`subtitle-${theme}`}>
+                                                <PostMetadata
+                                                    id={postdata.metadata.id}
+                                                    username={postdata.metadata.username}
+                                                    time={postdata.metadata.date}
+                                                    comments={postdata.metadata.comment_count}
+                                                />
+                                            </div>
+                                            {postdata.text && (
+                                                <div className="post-content">
+                                                    <p className={`${theme}-text`} dangerouslySetInnerHTML={{__html: postdata.text}} />
+                                                </div>
+                                            )}
                                         </div>
-                                        {postdata.text && (
-                                            <div className="post-content">
-                                                <p className={`${theme}-text`} dangerouslySetInnerHTML={{__html: postdata.text}} />
-                                            </div>
+                                        {postdata.metadata.comment_count > 0 && (
+                                            <>
+                                                <div className={`title section-title title-${theme}`}>
+                                                    Comments
+                                                </div>
+                                                {
+                                                    error.type && error.type === 2
+                                                        ? <p>{error.message}</p>
+                                                        : comments.length > 0
+                                                            ? (<>
+                                                                <CommentList comments={comments} />
+                                                                {postdata.metadata.comment_count > 50
+                                                                    ? this.state.all
+                                                                        ? error.type && error.type === 3
+                                                                            ? <p>{error.message}</p>
+                                                                            : comments.length === 50 && <Loading />
+                                                                        : <button
+                                                                            className={`button-link link-${theme}`}
+                                                                            onClick={this.viewAll}>
+                                                                            View All
+                                                                        </button>
+                                                                    : <></>
+                                                                }
+                                                            </>)
+                                                            : <Loading />
+                                                }
+                                            </>
                                         )}
-                                    </div>
-                                    {postdata.metadata.comment_count > 0 && (
-                                        <>
-                                            <div className={`title section-title title-${theme}`}>
-                                                Comments
-                                            </div>
-                                            {comments.length > 0
-                                                ? (<>
-                                                    <CommentList comments={comments} />
-                                                    {postdata.metadata.comment_count > 50
-                                                        ? this.state.all
-                                                            ? comments.length === 50 && <Loading />
-                                                            : <button
-                                                                className={`button-link link-${theme}`}
-                                                                onClick={this.viewAll}>
-                                                                View All
-                                                            </button>
-                                                        : <></>
-                                                    }
-                                                </>)
-                                                : <Loading />
-                                            }
-                                        </>
-                                    )}
-                                </>
-                            )}
-                        </ThemeConsumer>
-                    )
+                                    </>
+                                )}
+                            </ThemeConsumer>
+                        )
             }
             </>
         )

@@ -19,6 +19,11 @@ export default class Top extends React.Component
                 this.setState({
                     posts: data
                 });
+            })
+            .catch(({message}) => {
+                this.setState({
+                    error: "Failed to retrieve posts. " + message
+                })
             });
     }
     isLoading = () => {
@@ -30,7 +35,9 @@ export default class Top extends React.Component
         return (
             this.isLoading()
                 ? <Loading />
-                : <PostList posts={this.state.posts} />
+                : this.state.error
+                    ? <p>{this.state.error}</p>
+                    : <PostList posts={this.state.posts} />
         )
     }
 }
