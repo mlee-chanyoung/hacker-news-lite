@@ -6,7 +6,7 @@ export function getPostData(id)
         .then(data => {
             return {
                 title: data.title,
-                link: data.url === undefined ? "#" : data.url,
+                link: data.url,
                 text: data.text,
                 parent: data.parent,
                 comments: data.kids,
